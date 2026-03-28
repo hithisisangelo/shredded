@@ -39,7 +39,7 @@ export default function Sidebar({ activeView, setActiveView, open, setOpen, isMo
       }}>
         {/* Logo */}
         <div style={{
-          padding: open ? '20px 16px' : '20px 0',
+          padding: open ? '16px' : '16px 0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: open ? 'flex-start' : 'center',
@@ -47,21 +47,23 @@ export default function Sidebar({ activeView, setActiveView, open, setOpen, isMo
           borderBottom: `1px solid ${C.border}`,
           minHeight: '64px',
         }}>
-          <div style={{
-            width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
-            background: `linear-gradient(135deg, ${C.accent}, ${C.accent2})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px',
-          }}>
-            💪
-          </div>
+          <img
+            src="/prezkim.jpg"
+            alt="The Leader"
+            style={{
+              width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+              objectFit: 'cover', border: `2px solid ${C.accent}`,
+            }}
+          />
           {open && (
             <span style={{
-              fontSize: '16px', fontWeight: '800', letterSpacing: '-0.02em',
-              background: `linear-gradient(135deg, ${C.accent}, ${C.accent2})`,
+              fontSize: '13px', fontWeight: '800', letterSpacing: '-0.01em',
+              background: `linear-gradient(135deg, ${C.accent}, #ffffff, ${C.accent2})`,
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               whiteSpace: 'nowrap',
+              lineHeight: 1.2,
             }}>
-              SHREDDED
+              BABY DON'T<br />GET FAT
             </span>
           )}
         </div>
@@ -107,7 +109,7 @@ export default function Sidebar({ activeView, setActiveView, open, setOpen, isMo
         {/* Version */}
         {open && (
           <div style={{ padding: '12px 16px', borderTop: `1px solid ${C.border}`, fontSize: '11px', color: C.muted }}>
-            SHREDDED v1.0
+            BDGF v1.0 🇺🇸
           </div>
         )}
       </aside>

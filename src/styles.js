@@ -1,16 +1,16 @@
 export const C = {
-  bg: '#0a0a0f',
-  surface: '#111118',
-  card: '#1a1a24',
-  border: '#2a2a3a',
-  accent: '#22c55e',
-  accent2: '#a855f7',
+  bg: '#07070f',
+  surface: '#0e0e1a',
+  card: '#13131f',
+  border: '#1e1e32',
+  accent: '#E8192C',   // USA red
+  accent2: '#1B4FD8',  // USA blue
   danger: '#ef4444',
   warning: '#f59e0b',
   info: '#3b82f6',
   text: '#f0f0f0',
-  muted: '#888899',
-  cardHover: '#1f1f2e',
+  muted: '#7a7a9a',
+  cardHover: '#1a1a2e',
 };
 
 export const fonts = {
