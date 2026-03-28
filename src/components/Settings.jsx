@@ -136,7 +136,7 @@ export default function Settings({ userSettings, updateSettings, user }) {
           </div>
           <div>
             <label style={{ ...label }}>Height (inches)</label>
-            <input type="number" step="0.5" value={form.height_inches} onChange={setF('height_inches')} placeholder='e.g. 71 (= 5\'11")' style={{ ...input }} />
+            <input type="number" step="0.5" value={form.height_inches} onChange={setF('height_inches')} placeholder="e.g. 71 (= 5'11&quot;)" style={{ ...input }} />
           </div>
         </div>
       </div>
