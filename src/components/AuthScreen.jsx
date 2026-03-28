@@ -34,10 +34,14 @@ export default function AuthScreen({ onLogin }) {
       <div style={{ width: '100%', maxWidth: '420px', padding: '0 24px' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+            <img
+              src="/prezkim.jpg"
+              alt="The Supreme Leader"
+              style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: `3px solid ${C.accent}`, boxShadow: `0 0 24px ${C.accent}40` }}
+            />
+          </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: `linear-gradient(135deg, ${C.accent}, ${C.accent2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>
-              💪
-            </div>
             <span style={{ fontSize: '28px', fontWeight: '800', letterSpacing: '-0.02em', background: `linear-gradient(135deg, ${C.accent}, ${C.accent2})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               SHREDDED
             </span>
