@@ -67,7 +67,7 @@ Include all ${days_per_week} training days per week plus rest days. Make weeks p
     const client = getAnthropicClient(apiKey);
     const message = await client.messages.create({
       model: 'claude-haiku-4-5',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [{ role: 'user', content: prompt }],
     });
 
