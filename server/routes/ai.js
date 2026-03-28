@@ -66,7 +66,7 @@ Include all ${days_per_week} training days per week plus rest days. Make weeks p
 
     const client = getAnthropicClient(apiKey);
     const message = await client.messages.create({
-      model: 'claude-opus-4-5',
+      model: 'claude-haiku-4-5',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     });
@@ -115,7 +115,7 @@ Always prioritize safety and recommend consulting healthcare professionals for m
 
     const client = getAnthropicClient(apiKey);
     const message = await client.messages.create({
-      model: 'claude-opus-4-5',
+      model: 'claude-haiku-4-5',
       max_tokens: 1024,
       system: systemPrompt,
       messages: messages.map(m => ({ role: m.role, content: m.content })),
@@ -166,7 +166,7 @@ Be specific, motivating, and constructive. Format as plain text paragraphs, no b
 
     const client = getAnthropicClient(apiKey);
     const message = await client.messages.create({
-      model: 'claude-opus-4-5',
+      model: 'claude-haiku-4-5',
       max_tokens: 512,
       messages: [{ role: 'user', content: prompt }],
     });
