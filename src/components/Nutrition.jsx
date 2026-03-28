@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { C, fonts, card, flexBetween, label, btn, btnPrimary } from '../styles.js';
-import { nutrition } from '../api.js';
+import { nutrition, photos as photosApi } from '../api.js';
 import FoodSearch from './FoodSearch.jsx';
 
 const MEALS = [
@@ -83,6 +83,12 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
   const [activeMeal, setActiveMeal] = useState('breakfast');
   const [deletingId, setDeletingId] = useState(null);
 
+  // Photos
+  const [dayPhotos, setDayPhotos] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
+  const fileInputRef = useRef(null);
+
   const calorieGoal = parseInt(userSettings?.calorie_goal) || 2000;
   const proteinGoal = parseInt(userSettings?.protein_goal) || 150;
   const carbsGoal = parseInt(userSettings?.carbs_goal) || 200;
@@ -92,12 +98,14 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [logsData, summaryData] = await Promise.all([
+      const [logsData, summaryData, photosData] = await Promise.all([
         nutrition.getLogs(selectedDate),
         nutrition.getSummary(selectedDate),
+        photosApi.getByDate(selectedDate).catch(() => []),
       ]);
       setLogs(logsData);
       setSummary(summaryData);
+      setDayPhotos(photosData);
       const waterLog = logsData.find(l => l.food_name === '__water__');
       setGlasses(waterLog ? parseInt(waterLog.quantity) : 0);
     } catch (err) {
@@ -153,6 +161,31 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
   };
 
   const mealLogs = (mealId) => logs.filter(l => l.meal === mealId && l.food_name !== '__water__');
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    try {
+      const newPhoto = await photosApi.upload(file, selectedDate);
+      setDayPhotos(prev => [...prev, newPhoto]);
+    } catch (err) {
+      console.error('Photo upload failed:', err);
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleDeletePhoto = async (photoId) => {
+    try {
+      await photosApi.delete(photoId);
+      setDayPhotos(prev => prev.filter(p => p.id !== photoId));
+      if (lightboxPhoto?.id === photoId) setLightboxPhoto(null);
+    } catch (err) {
+      console.error('Delete photo failed:', err);
+    }
+  };
 
   return (
     <div style={{ maxWidth: '1100px' }}>
@@ -246,6 +279,81 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
           })}
         </div>
       </div>
+
+      {/* Food Photo Log */}
+      <div style={{ ...card, marginTop: '20px' }}>
+        <div style={{ ...flexBetween, marginBottom: '16px' }}>
+          <div>
+            <h3 style={{ fontSize: '15px', fontWeight: '700', color: C.text }}>📸 Food Photos</h3>
+            <p style={{ fontSize: '12px', color: C.muted, marginTop: '2px' }}>Log what you ate visually</p>
+          </div>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingPhoto}
+            style={{ ...btn, backgroundColor: `${C.accent}15`, color: C.accent, border: `1px solid ${C.accent}30`, opacity: uploadingPhoto ? 0.6 : 1 }}
+          >
+            {uploadingPhoto ? 'Uploading...' : '+ Add Photo'}
+          </button>
+          <input ref={fileInputRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handlePhotoUpload} />
+        </div>
+
+        {dayPhotos.length === 0 ? (
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            style={{ border: `2px dashed ${C.border}`, borderRadius: '10px', padding: '32px', textAlign: 'center', cursor: 'pointer', color: C.muted, fontSize: '13px' }}
+          >
+            <div style={{ fontSize: '32px', marginBottom: '8px' }}>📷</div>
+            Tap to add a food photo for {selectedDate === today ? 'today' : selectedDate}
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '10px' }}>
+            {dayPhotos.map(photo => (
+              <div key={photo.id} style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', aspectRatio: '1', cursor: 'pointer', backgroundColor: C.surface }}>
+                <img
+                  src={photo.url}
+                  alt="food"
+                  onClick={() => setLightboxPhoto(photo)}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDeletePhoto(photo.id); }}
+                  style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', border: 'none', borderRadius: '50%', width: '22px', height: '22px', color: '#fff', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  ✕
+                </button>
+                {photo.meal && (
+                  <div style={{ position: 'absolute', bottom: '0', left: '0', right: '0', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '10px', padding: '3px 6px', textTransform: 'capitalize' }}>
+                    {photo.meal}
+                  </div>
+                )}
+              </div>
+            ))}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              style={{ aspectRatio: '1', border: `2px dashed ${C.border}`, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.muted, fontSize: '24px' }}
+            >
+              +
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      {lightboxPhoto && (
+        <>
+          <div onClick={() => setLightboxPhoto(null)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div onClick={e => e.stopPropagation()} style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
+              <img src={lightboxPhoto.url} alt="food" style={{ maxWidth: '100%', maxHeight: '85vh', borderRadius: '12px', objectFit: 'contain' }} />
+              <button onClick={() => setLightboxPhoto(null)} style={{ position: 'absolute', top: '-12px', right: '-12px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '50%', width: '32px', height: '32px', color: C.text, cursor: 'pointer', fontSize: '14px' }}>
+                ✕
+              </button>
+              <div style={{ textAlign: 'center', marginTop: '10px', color: C.muted, fontSize: '12px' }}>
+                {lightboxPhoto.date} {lightboxPhoto.meal ? `· ${lightboxPhoto.meal}` : ''}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {showFoodSearch && (
         <FoodSearch

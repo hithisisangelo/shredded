@@ -104,6 +104,29 @@ export const progress = {
     fetch(`${BASE}/progress/measurements`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
 };
 
+// Food Photos
+export const photos = {
+  upload: (file, date, meal, notes) => {
+    const form = new FormData();
+    form.append('photo', file);
+    form.append('date', date);
+    if (meal) form.append('meal', meal);
+    if (notes) form.append('notes', notes);
+    const token = localStorage.getItem('shredded_token');
+    return fetch(`${BASE}/photos/upload`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    }).then(handleResponse);
+  },
+  getByDate: (date) =>
+    fetch(`${BASE}/photos?date=${date}`, { headers: authHeaders() }).then(handleResponse),
+  getRecent: (days = 7) =>
+    fetch(`${BASE}/photos/recent?days=${days}`, { headers: authHeaders() }).then(handleResponse),
+  delete: (id) =>
+    fetch(`${BASE}/photos/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handleResponse),
+};
+
 // Settings
 export const settings = {
   get: () =>
