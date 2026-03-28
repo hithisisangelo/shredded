@@ -11,19 +11,21 @@ const NAV_ITEMS = [
   { id: 'settings', icon: '⚙️', label: 'Settings' },
 ];
 
-export default function Sidebar({ activeView, setActiveView, open, setOpen }) {
+export default function Sidebar({ activeView, setActiveView, open, setOpen, isMobile }) {
   return (
     <>
-      {/* Mobile overlay */}
-      {open && (
+      {/* Mobile overlay backdrop */}
+      {open && isMobile && (
         <div
           onClick={() => setOpen(false)}
-          style={{ display: 'none', position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 99 }}
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 99 }}
           className="mobile-overlay"
         />
       )}
 
-      <aside style={{
+      {/* Hide sidebar entirely on mobile when closed */}
+      {(!isMobile || open) && (
+      <aside className={isMobile ? 'sidebar-mobile' : ''} style={{
         width: open ? '220px' : '64px',
         minWidth: open ? '220px' : '64px',
         backgroundColor: C.surface,
@@ -109,6 +111,7 @@ export default function Sidebar({ activeView, setActiveView, open, setOpen }) {
           </div>
         )}
       </aside>
+      )}
     </>
   );
 }

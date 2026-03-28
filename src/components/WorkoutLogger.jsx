@@ -252,7 +252,7 @@ export default function WorkoutLogger({ activePlan, todayData }) {
         )}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
+      <div className="logger-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
         {/* Main logger */}
         <div>
           {/* Date + meta */}

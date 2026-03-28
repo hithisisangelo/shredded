@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { C, fonts } from './styles.js';
 import { auth, workouts, nutrition, settings } from './api.js';
+import './mobile.css';
 
 import AuthScreen from './components/AuthScreen.jsx';
 import Sidebar from './components/Sidebar.jsx';
@@ -26,7 +27,18 @@ export default function App() {
   const [todayData, setTodayData] = useState(null);
   const [nutritionSummary, setNutritionSummary] = useState(null);
   const [userSettings, setUserSettings] = useState({});
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) setSidebarOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -134,9 +146,10 @@ export default function App() {
     <div style={{ display: 'flex', height: '100vh', backgroundColor: C.bg, fontFamily: fonts.body, overflow: 'hidden' }}>
       <Sidebar
         activeView={activeView}
-        setActiveView={setActiveView}
+        setActiveView={(view) => { setActiveView(view); if (isMobile) setSidebarOpen(false); }}
         open={sidebarOpen}
         setOpen={setSidebarOpen}
+        isMobile={isMobile}
       />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
         <TopBar
@@ -145,7 +158,7 @@ export default function App() {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
-        <main style={{ flex: 1, overflow: 'auto', padding: '24px', scrollbarWidth: 'thin', scrollbarColor: `${C.border} transparent` }}>
+        <main className="main-content" style={{ flex: 1, overflow: 'auto', padding: '24px', scrollbarWidth: 'thin', scrollbarColor: `${C.border} transparent` }}>
           {activeView === 'dashboard' && <Dashboard {...viewProps} />}
           {activeView === 'calendar' && <WorkoutCalendar {...viewProps} />}
           {activeView === 'ai' && <AiTrainer {...viewProps} />}

@@ -150,7 +150,7 @@ export default function Dashboard({ userSettings, todayData, nutritionSummary, s
         <StatCard label="Protein Today" value={`${Math.round(summary.protein)}g`} icon="🥩" color={C.info} sub={`/ ${proteinGoal}g goal`} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+      <div className="grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
         {/* Today's Workout */}
         <div style={{ ...card }}>
           <div style={{ ...flexBetween, marginBottom: '16px' }}>

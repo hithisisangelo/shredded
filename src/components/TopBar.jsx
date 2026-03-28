@@ -37,7 +37,7 @@ export default function TopBar({ user, onLogout, sidebarOpen, setSidebarOpen }) 
           <div style={{ fontSize: '13px', fontWeight: '600', color: C.text }}>
             {getGreeting()}, {user?.username}!
           </div>
-          <div style={{ fontSize: '11px', color: C.muted }}>{dateStr}</div>
+          <div className="topbar-date" style={{ fontSize: '11px', color: C.muted }}>{dateStr}</div>
         </div>
       </div>
 

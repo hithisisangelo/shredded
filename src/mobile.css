@@ -1,0 +1,37 @@
+/* Mobile responsiveness */
+
+@media (max-width: 768px) {
+  /* Reduce main content padding */
+  .main-content {
+    padding: 16px !important;
+  }
+
+  /* Stack 2-column grids */
+  .grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stack logger grid (1fr 340px) */
+  .logger-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Show mobile sidebar overlay */
+  .mobile-overlay {
+    display: block !important;
+  }
+
+  /* Hide date in topbar on small screens */
+  .topbar-date {
+    display: none !important;
+  }
+
+  /* Sidebar fixed overlay on mobile */
+  .sidebar-mobile {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    z-index: 100 !important;
+  }
+}
