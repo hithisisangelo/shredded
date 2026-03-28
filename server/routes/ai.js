@@ -23,14 +23,20 @@ router.post('/generate-program', async (req, res) => {
 
     const { goal, days_per_week, level, include_cardio, cardio_type, equipment } = req.body;
 
+    const numDays = days_per_week || 4;
     const prompt = `You are an expert personal trainer. Generate a complete 4-week progressive workout program based on these parameters:
 - Goal: ${goal || 'muscle gain'}
-- Training days per week: ${days_per_week || 4}
+- Training days per week: ${numDays}
 - Fitness level: ${level || 'intermediate'}
 - Include cardio: ${include_cardio ? 'Yes, type: ' + (cardio_type || 'moderate') : 'No'}
 - Available equipment: ${equipment || 'full gym'}
 
-Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
+CRITICAL REQUIREMENTS:
+- Each week MUST contain EXACTLY ${numDays} training days (type: "strength" or "cardio") plus rest days to fill the week to 7 days total.
+- Do NOT skip or omit any training days. Count carefully before finishing each week.
+- All 4 weeks must be present in the response.
+
+Return ONLY a valid JSON object with this exact structure (no markdown, no explanation, no trailing commas):
 {
   "weeks": [
     {
@@ -62,12 +68,12 @@ Return ONLY a valid JSON object with this exact structure (no markdown, no expla
   ]
 }
 
-Include all ${days_per_week} training days per week plus rest days. Make weeks progressively harder (increase sets/weight week over week). Week 1 is foundation, Week 2 adds volume, Week 3 is peak intensity, Week 4 is deload. Each training day should have 4-7 exercises with appropriate sets and reps for the goal. Include warm-up suggestions in notes where relevant.`;
+Make weeks progressively harder (increase sets/weight week over week). Week 1 is foundation, Week 2 adds volume, Week 3 is peak intensity, Week 4 is deload. Each training day should have 5-6 exercises with appropriate sets and reps for the goal.`;
 
     const client = getAnthropicClient(apiKey);
     const message = await client.messages.create({
       model: 'claude-haiku-4-5',
-      max_tokens: 8192,
+      max_tokens: 16000,
       messages: [{ role: 'user', content: prompt }],
     });
 

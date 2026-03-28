@@ -1,0 +1,301 @@
+{
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Foundation",
+      "days": [
+        {
+          "day": "Monday",
+          "name": "Push — Chest / Shoulders / Triceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Barbell Bench Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "Control the descent, full range of motion" },
+            { "name": "Incline Dumbbell Press", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "Keep elbows at 45°" },
+            { "name": "Cable Lateral Raise", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Light weight, strict form" },
+            { "name": "Seated Dumbbell Shoulder Press", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Tricep Rope Pushdown", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Squeeze at the bottom" },
+            { "name": "Overhead Tricep Extension (EZ Bar)", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "name": "Pull — Back / Biceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Lat Pulldown (Wide Grip)", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "Pull to upper chest, lean back slightly" },
+            { "name": "Seated Cable Row", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "Keep chest up, drive elbows back" },
+            { "name": "Single-Arm Dumbbell Row", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "Each side" },
+            { "name": "Face Pull (Cable)", "sets": 3, "reps": "15-20", "rest": "60s", "notes": "Great for shoulder health" },
+            { "name": "Barbell Curl", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Hammer Curl", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Neutral grip, no swinging" }
+          ]
+        },
+        {
+          "day": "Wednesday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Thursday",
+          "name": "Legs (No Squat / No Deadlift)",
+          "type": "strength",
+          "exercises": [
+            { "name": "Leg Press", "sets": 4, "reps": "10-12", "rest": "90s", "notes": "Feet shoulder-width, don't lock out knees" },
+            { "name": "Romanian Deadlift (Light — hip hinge focus)", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "Hinge at hips, soft knees, bar close to body" },
+            { "name": "Walking Lunges (Dumbbell)", "sets": 3, "reps": "12 each leg", "rest": "75s", "notes": "" },
+            { "name": "Leg Extension", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Full extension, controlled down" },
+            { "name": "Lying Leg Curl", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Standing Calf Raise", "sets": 4, "reps": "15-20", "rest": "45s", "notes": "Full stretch at bottom" }
+          ]
+        },
+        {
+          "day": "Friday",
+          "name": "Upper Body — Chest / Back / Shoulders",
+          "type": "strength",
+          "exercises": [
+            { "name": "Dumbbell Bench Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Cable Row (Wide Grip)", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Dumbbell Lateral Raise", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Chest Fly (Cable or Pec Deck)", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Squeeze at peak contraction" },
+            { "name": "Straight Arm Pulldown", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "Great lat isolation" },
+            { "name": "Plank", "sets": 3, "reps": "45s hold", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Saturday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Sunday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Volume",
+      "days": [
+        {
+          "day": "Monday",
+          "name": "Push — Chest / Shoulders / Triceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Barbell Bench Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "Add 2.5-5lbs from last week" },
+            { "name": "Incline Dumbbell Press", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "Extra set this week" },
+            { "name": "Cable Lateral Raise", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Seated Dumbbell Shoulder Press", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Tricep Rope Pushdown", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Overhead Tricep Extension (EZ Bar)", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "name": "Pull — Back / Biceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Lat Pulldown (Wide Grip)", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "Add weight if Week 1 felt easy" },
+            { "name": "Seated Cable Row", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Single-Arm Dumbbell Row", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Face Pull (Cable)", "sets": 3, "reps": "15-20", "rest": "60s", "notes": "" },
+            { "name": "Barbell Curl", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Hammer Curl", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Wednesday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Thursday",
+          "name": "Legs (No Squat / No Deadlift)",
+          "type": "strength",
+          "exercises": [
+            { "name": "Leg Press", "sets": 4, "reps": "10-12", "rest": "90s", "notes": "Add a plate from last week" },
+            { "name": "Romanian Deadlift", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Walking Lunges (Dumbbell)", "sets": 4, "reps": "12 each leg", "rest": "75s", "notes": "" },
+            { "name": "Leg Extension", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Lying Leg Curl", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Standing Calf Raise", "sets": 4, "reps": "15-20", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Friday",
+          "name": "Upper Body — Chest / Back / Shoulders",
+          "type": "strength",
+          "exercises": [
+            { "name": "Dumbbell Bench Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Cable Row (Wide Grip)", "sets": 4, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Dumbbell Lateral Raise", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Chest Fly (Cable or Pec Deck)", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Straight Arm Pulldown", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Plank", "sets": 3, "reps": "60s hold", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Saturday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Sunday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Peak Intensity",
+      "days": [
+        {
+          "day": "Monday",
+          "name": "Push — Chest / Shoulders / Triceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Barbell Bench Press", "sets": 5, "reps": "6-8", "rest": "2min", "notes": "Heaviest week — push the weight" },
+            { "name": "Incline Dumbbell Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Cable Lateral Raise", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Seated Dumbbell Shoulder Press", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Tricep Rope Pushdown", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Overhead Tricep Extension (EZ Bar)", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "name": "Pull — Back / Biceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Lat Pulldown (Wide Grip)", "sets": 5, "reps": "6-8", "rest": "2min", "notes": "" },
+            { "name": "Seated Cable Row", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Single-Arm Dumbbell Row", "sets": 4, "reps": "8-10", "rest": "60s", "notes": "" },
+            { "name": "Face Pull (Cable)", "sets": 3, "reps": "15-20", "rest": "60s", "notes": "" },
+            { "name": "Barbell Curl", "sets": 4, "reps": "8-10", "rest": "60s", "notes": "" },
+            { "name": "Incline Dumbbell Curl", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "Great stretch on the bicep" }
+          ]
+        },
+        {
+          "day": "Wednesday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Thursday",
+          "name": "Legs (No Squat / No Deadlift)",
+          "type": "strength",
+          "exercises": [
+            { "name": "Leg Press", "sets": 5, "reps": "8-10", "rest": "2min", "notes": "Max effort" },
+            { "name": "Romanian Deadlift", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Bulgarian Split Squat", "sets": 3, "reps": "10 each leg", "rest": "90s", "notes": "Rear foot elevated on bench" },
+            { "name": "Leg Extension", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Lying Leg Curl", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Standing Calf Raise", "sets": 5, "reps": "15-20", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Friday",
+          "name": "Upper Body — Chest / Back / Shoulders",
+          "type": "strength",
+          "exercises": [
+            { "name": "Dumbbell Bench Press", "sets": 5, "reps": "6-8", "rest": "2min", "notes": "" },
+            { "name": "Cable Row (Wide Grip)", "sets": 4, "reps": "8-10", "rest": "90s", "notes": "" },
+            { "name": "Dumbbell Lateral Raise", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Chest Fly (Cable or Pec Deck)", "sets": 4, "reps": "10-12", "rest": "60s", "notes": "" },
+            { "name": "Straight Arm Pulldown", "sets": 4, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Ab Wheel Rollout", "sets": 3, "reps": "10-12", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Saturday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Sunday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Deload",
+      "days": [
+        {
+          "day": "Monday",
+          "name": "Push — Chest / Shoulders / Triceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Barbell Bench Press", "sets": 3, "reps": "8-10", "rest": "90s", "notes": "Drop weight to Week 1 levels — focus on form" },
+            { "name": "Incline Dumbbell Press", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Cable Lateral Raise", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Tricep Rope Pushdown", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "name": "Pull — Back / Biceps",
+          "type": "strength",
+          "exercises": [
+            { "name": "Lat Pulldown (Wide Grip)", "sets": 3, "reps": "10-12", "rest": "90s", "notes": "Light and controlled" },
+            { "name": "Seated Cable Row", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Face Pull (Cable)", "sets": 3, "reps": "15-20", "rest": "60s", "notes": "" },
+            { "name": "Barbell Curl", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Wednesday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Thursday",
+          "name": "Legs (No Squat / No Deadlift)",
+          "type": "strength",
+          "exercises": [
+            { "name": "Leg Press", "sets": 3, "reps": "12-15", "rest": "90s", "notes": "Lighter load, focus on mind-muscle connection" },
+            { "name": "Romanian Deadlift", "sets": 3, "reps": "12-15", "rest": "75s", "notes": "" },
+            { "name": "Leg Extension", "sets": 3, "reps": "15", "rest": "60s", "notes": "" },
+            { "name": "Lying Leg Curl", "sets": 3, "reps": "15", "rest": "60s", "notes": "" },
+            { "name": "Standing Calf Raise", "sets": 3, "reps": "15-20", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Friday",
+          "name": "Upper Body — Chest / Back / Shoulders",
+          "type": "strength",
+          "exercises": [
+            { "name": "Dumbbell Bench Press", "sets": 3, "reps": "10-12", "rest": "90s", "notes": "" },
+            { "name": "Cable Row (Wide Grip)", "sets": 3, "reps": "10-12", "rest": "75s", "notes": "" },
+            { "name": "Dumbbell Lateral Raise", "sets": 3, "reps": "12-15", "rest": "60s", "notes": "" },
+            { "name": "Plank", "sets": 3, "reps": "45s hold", "rest": "45s", "notes": "" }
+          ]
+        },
+        {
+          "day": "Saturday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        },
+        {
+          "day": "Sunday",
+          "name": "Rest Day",
+          "type": "rest",
+          "exercises": []
+        }
+      ]
+    }
+  ]
+}

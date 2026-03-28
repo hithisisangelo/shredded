@@ -142,6 +142,14 @@ export default function AiTrainer({ userSettings, setActivePlan }) {
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
 
+  // Import
+  const [importJson, setImportJson] = useState('');
+  const [importProgram, setImportProgram] = useState(null);
+  const [importError, setImportError] = useState('');
+  const [importName, setImportName] = useState('My Custom Program');
+  const [importSaving, setImportSaving] = useState(false);
+  const [importSavedMsg, setImportSavedMsg] = useState('');
+
   // Chat
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "Hey! I'm your AI personal trainer. Ask me about workouts, nutrition, recovery, exercise form — anything fitness related. Let's get you SHREDDED! 💪" }
@@ -215,6 +223,41 @@ export default function AiTrainer({ userSettings, setActivePlan }) {
 
   const setF = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
 
+  const handleParseImport = () => {
+    setImportError('');
+    setImportProgram(null);
+    try {
+      const parsed = JSON.parse(importJson.trim());
+      if (!parsed.weeks || !Array.isArray(parsed.weeks)) throw new Error('JSON must have a "weeks" array at the top level.');
+      setImportProgram(parsed);
+    } catch (err) {
+      setImportError('Invalid JSON: ' + err.message);
+    }
+  };
+
+  const handleSaveImport = async () => {
+    if (!importProgram) return;
+    setImportSaving(true);
+    try {
+      const result = await workouts.createPlan({
+        name: importName,
+        goal: 'custom',
+        level: 'intermediate',
+        days_per_week: importProgram.weeks[0]?.days?.filter(d => d.type !== 'rest').length || 4,
+        weeks: importProgram.weeks.length,
+        program_data: importProgram,
+      });
+      await workouts.activatePlan(result.id);
+      setActivePlan({ ...result, active: true });
+      setImportSavedMsg('✓ Program saved and set as active!');
+      setTimeout(() => setImportSavedMsg(''), 3000);
+    } catch (err) {
+      setImportError(err.message);
+    } finally {
+      setImportSaving(false);
+    }
+  };
+
   return (
     <div style={{ maxWidth: '900px' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -224,7 +267,7 @@ export default function AiTrainer({ userSettings, setActivePlan }) {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '4px', backgroundColor: C.surface, padding: '4px', borderRadius: '10px', marginBottom: '24px', border: `1px solid ${C.border}` }}>
-        {[{ id: 'generate', label: '📋 Generate Program' }, { id: 'chat', label: '💬 Ask Trainer' }].map(t => (
+        {[{ id: 'generate', label: '📋 Generate Program' }, { id: 'import', label: '📥 Import JSON' }, { id: 'chat', label: '💬 Ask Trainer' }].map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
@@ -326,6 +369,69 @@ export default function AiTrainer({ userSettings, setActivePlan }) {
                 </div>
               )}
               <ProgramDisplay program={program} onSave={handleSaveProgram} saving={saving} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'import' && (
+        <div style={{ ...card }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '700', color: C.text, marginBottom: '6px' }}>Import Program JSON</h2>
+          <p style={{ fontSize: '13px', color: C.muted, marginBottom: '20px' }}>Paste your workout JSON below, preview it, then save it as your active plan.</p>
+
+          {!importProgram ? (
+            <>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ ...label }}>Program Name</label>
+                <input
+                  type="text"
+                  value={importName}
+                  onChange={e => setImportName(e.target.value)}
+                  style={{ ...input }}
+                  placeholder="e.g. 4-Day Push Pull Legs"
+                />
+              </div>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ ...label }}>Paste JSON</label>
+                <textarea
+                  value={importJson}
+                  onChange={e => setImportJson(e.target.value)}
+                  placeholder={'{\n  "weeks": [...]\n}'}
+                  rows={14}
+                  style={{ ...input, fontFamily: fonts.mono, fontSize: '12px', resize: 'vertical', lineHeight: '1.5' }}
+                />
+              </div>
+              {importError && (
+                <div style={{ marginBottom: '12px', padding: '12px', backgroundColor: `${C.danger}15`, border: `1px solid ${C.danger}40`, borderRadius: '8px', color: C.danger, fontSize: '13px' }}>
+                  {importError}
+                </div>
+              )}
+              <button onClick={handleParseImport} style={{ ...btnPrimary, padding: '12px 28px', fontSize: '14px' }}>
+                Preview Program →
+              </button>
+            </>
+          ) : (
+            <div>
+              <div style={{ ...flexBetween, marginBottom: '20px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: '700', color: C.text }}>{importName}</h3>
+                  <p style={{ fontSize: '13px', color: C.muted }}>{importProgram.weeks.length} weeks · Preview looks good?</p>
+                </div>
+                <button onClick={() => { setImportProgram(null); setImportError(''); }} style={{ ...btnSecondary, fontSize: '12px' }}>
+                  ← Edit JSON
+                </button>
+              </div>
+              {importSavedMsg && (
+                <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: `${C.accent}15`, border: `1px solid ${C.accent}40`, borderRadius: '8px', color: C.accent, fontSize: '13px', fontWeight: '600' }}>
+                  {importSavedMsg}
+                </div>
+              )}
+              {importError && (
+                <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: `${C.danger}15`, border: `1px solid ${C.danger}40`, borderRadius: '8px', color: C.danger, fontSize: '13px' }}>
+                  {importError}
+                </div>
+              )}
+              <ProgramDisplay program={importProgram} onSave={handleSaveImport} saving={importSaving} />
             </div>
           )}
         </div>
