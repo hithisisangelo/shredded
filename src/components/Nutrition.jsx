@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { C, fonts, card, flexBetween, label, btn, btnPrimary } from '../styles.js';
-import { nutrition, photos as photosApi } from '../api.js';
+import { nutrition, photos as photosApi, cardio as cardioApi } from '../api.js';
 import FoodSearch from './FoodSearch.jsx';
 
 const MEALS = [
@@ -8,6 +8,22 @@ const MEALS = [
   { id: 'lunch', label: 'Lunch', icon: '🥗' },
   { id: 'dinner', label: 'Dinner', icon: '🍽️' },
   { id: 'snack', label: 'Snacks', icon: '🍎' },
+];
+
+// calories burned per minute at ~196 lbs
+const CARDIO_ACTIVITIES = [
+  { label: 'Running (6 mph)', calPerMin: 12 },
+  { label: 'Running (8 mph)', calPerMin: 15 },
+  { label: 'Cycling (moderate)', calPerMin: 9 },
+  { label: 'Cycling (intense)', calPerMin: 13 },
+  { label: 'Elliptical', calPerMin: 8 },
+  { label: 'Rowing Machine', calPerMin: 10 },
+  { label: 'Stairmaster', calPerMin: 10 },
+  { label: 'Jump Rope', calPerMin: 13 },
+  { label: 'Swimming', calPerMin: 9 },
+  { label: 'HIIT', calPerMin: 13 },
+  { label: 'Walking (brisk)', calPerMin: 5 },
+  { label: 'Other', calPerMin: 8 },
 ];
 
 function CalorieRing({ consumed, goal }) {
@@ -83,6 +99,13 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
   const [activeMeal, setActiveMeal] = useState('breakfast');
   const [deletingId, setDeletingId] = useState(null);
 
+  // Cardio
+  const [cardioLogs, setCardioLogs] = useState([]);
+  const [showCardioForm, setShowCardioForm] = useState(false);
+  const [cardioForm, setCardioForm] = useState({ activity: CARDIO_ACTIVITIES[0].label, duration_minutes: 30, calories_burned: CARDIO_ACTIVITIES[0].calPerMin * 30 });
+  const totalCaloriesBurned = cardioLogs.reduce((sum, l) => sum + l.calories_burned, 0);
+  const netCalories = Math.round(summary.calories - totalCaloriesBurned);
+
   // Photos
   const [dayPhotos, setDayPhotos] = useState([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -98,14 +121,16 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [logsData, summaryData, photosData] = await Promise.all([
+      const [logsData, summaryData, photosData, cardioData] = await Promise.all([
         nutrition.getLogs(selectedDate),
         nutrition.getSummary(selectedDate),
         photosApi.getByDate(selectedDate).catch(() => []),
+        cardioApi.getLogs(selectedDate).catch(() => []),
       ]);
       setLogs(logsData);
       setSummary(summaryData);
       setDayPhotos(photosData);
+      setCardioLogs(cardioData);
       const waterLog = logsData.find(l => l.food_name === '__water__');
       setGlasses(waterLog ? parseInt(waterLog.quantity) : 0);
     } catch (err) {
@@ -162,6 +187,38 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
 
   const mealLogs = (mealId) => logs.filter(l => l.meal === mealId && l.food_name !== '__water__');
 
+  const handleCardioActivityChange = (activityLabel) => {
+    const found = CARDIO_ACTIVITIES.find(a => a.label === activityLabel);
+    const calPerMin = found ? found.calPerMin : 8;
+    setCardioForm(f => ({ ...f, activity: activityLabel, calories_burned: Math.round(calPerMin * f.duration_minutes) }));
+  };
+
+  const handleCardioDurationChange = (mins) => {
+    const found = CARDIO_ACTIVITIES.find(a => a.label === cardioForm.activity);
+    const calPerMin = found ? found.calPerMin : 8;
+    setCardioForm(f => ({ ...f, duration_minutes: mins, calories_burned: Math.round(calPerMin * mins) }));
+  };
+
+  const handleAddCardio = async () => {
+    try {
+      const log = await cardioApi.addLog({ date: selectedDate, ...cardioForm });
+      setCardioLogs(prev => [...prev, log]);
+      setShowCardioForm(false);
+      setCardioForm({ activity: CARDIO_ACTIVITIES[0].label, duration_minutes: 30, calories_burned: CARDIO_ACTIVITIES[0].calPerMin * 30 });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteCardio = async (id) => {
+    try {
+      await cardioApi.deleteLog(id);
+      setCardioLogs(prev => prev.filter(l => l.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -201,7 +258,12 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
         {/* Left: summary */}
         <div>
           <div style={{ ...card, marginBottom: '16px', textAlign: 'center' }}>
-            <CalorieRing consumed={summary.calories} goal={calorieGoal} />
+            <CalorieRing consumed={netCalories} goal={calorieGoal} />
+            {totalCaloriesBurned > 0 && (
+              <div style={{ fontSize: '12px', color: C.accent, marginTop: '8px', fontWeight: '600' }}>
+                🔥 -{totalCaloriesBurned} cal burned · Net: {netCalories} kcal
+              </div>
+            )}
           </div>
           <div style={{ ...card, marginBottom: '16px' }}>
             <h3 style={{ fontSize: '13px', fontWeight: '600', color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '14px' }}>Macros</h3>
@@ -278,6 +340,65 @@ export default function Nutrition({ userSettings, refreshTodayData }) {
             );
           })}
         </div>
+      </div>
+
+      {/* Cardio Log */}
+      <div style={{ ...card, marginBottom: '20px' }}>
+        <div style={{ ...flexBetween, marginBottom: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '20px' }}>🏃</span>
+            <div>
+              <span style={{ fontSize: '15px', fontWeight: '700', color: C.text }}>Cardio</span>
+              {totalCaloriesBurned > 0 && <span style={{ fontSize: '12px', color: C.accent, marginLeft: '8px' }}>-{totalCaloriesBurned} kcal burned</span>}
+            </div>
+          </div>
+          <button onClick={() => setShowCardioForm(v => !v)} style={{ ...btn, fontSize: '12px', backgroundColor: `${C.accent}15`, color: C.accent, border: `1px solid ${C.accent}30` }}>
+            {showCardioForm ? 'Cancel' : '+ Add Cardio'}
+          </button>
+        </div>
+
+        {showCardioForm && (
+          <div style={{ backgroundColor: C.surface, borderRadius: '10px', padding: '14px', marginBottom: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={{ fontSize: '11px', color: C.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Activity</label>
+              <select value={cardioForm.activity} onChange={e => handleCardioActivityChange(e.target.value)} style={{ width: '100%', backgroundColor: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '8px 12px', color: C.text, fontSize: '13px', fontFamily: fonts.body }}>
+                {CARDIO_ACTIVITIES.map(a => <option key={a.label} value={a.label}>{a.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: '11px', color: C.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Duration (min)</label>
+              <input type="number" value={cardioForm.duration_minutes} onChange={e => handleCardioDurationChange(parseInt(e.target.value) || 0)} style={{ width: '100%', backgroundColor: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '8px 12px', color: C.text, fontSize: '13px', fontFamily: fonts.body }} />
+            </div>
+            <div>
+              <label style={{ fontSize: '11px', color: C.muted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Calories Burned</label>
+              <input type="number" value={cardioForm.calories_burned} onChange={e => setCardioForm(f => ({ ...f, calories_burned: parseInt(e.target.value) || 0 }))} style={{ width: '100%', backgroundColor: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '8px 12px', color: C.text, fontSize: '13px', fontFamily: fonts.body }} />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <button onClick={handleAddCardio} style={{ ...btnPrimary, width: '100%', padding: '10px' }}>
+                Log Cardio
+              </button>
+            </div>
+          </div>
+        )}
+
+        {cardioLogs.length === 0 ? (
+          <p style={{ color: C.muted, fontSize: '13px', padding: '8px 0' }}>No cardio logged yet</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {cardioLogs.map(log => (
+              <div key={log.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${C.border}30` }}>
+                <div>
+                  <span style={{ fontSize: '13px', color: C.text, fontWeight: '500' }}>{log.activity}</span>
+                  <span style={{ fontSize: '12px', color: C.muted, marginLeft: '8px' }}>{log.duration_minutes} min</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '13px', color: C.accent, fontWeight: '600', fontFamily: fonts.mono }}>-{log.calories_burned} kcal</span>
+                  <button onClick={() => handleDeleteCardio(log.id)} style={{ background: 'none', border: 'none', color: C.danger, cursor: 'pointer', fontSize: '13px' }}>✕</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Food Photo Log */}

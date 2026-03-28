@@ -12,6 +12,7 @@ const aiRoutes = require('./routes/ai');
 const progressRoutes = require('./routes/progress');
 const settingsRoutes = require('./routes/settings');
 const photoRoutes = require('./routes/photos');
+const cardioRoutes = require('./routes/cardio');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,6 +40,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/photos', photoRoutes);
+app.use('/api/cardio', cardioRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const distPath = path.join(__dirname, '../dist');

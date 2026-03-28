@@ -104,6 +104,16 @@ export const progress = {
     fetch(`${BASE}/progress/measurements`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
 };
 
+// Cardio
+export const cardio = {
+  getLogs: (date) =>
+    fetch(`${BASE}/cardio?date=${date}`, { headers: authHeaders() }).then(handleResponse),
+  addLog: (body) =>
+    fetch(`${BASE}/cardio`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }).then(handleResponse),
+  deleteLog: (id) =>
+    fetch(`${BASE}/cardio/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handleResponse),
+};
+
 // Food Photos
 export const photos = {
   upload: (file, date, meal, notes) => {

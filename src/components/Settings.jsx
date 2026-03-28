@@ -10,6 +10,39 @@ const GOAL_TYPES = [
   { value: 'general', label: 'General Fitness' },
 ];
 
+const ACTIVITY_LEVELS = [
+  { value: 1.2,   label: 'Sedentary (desk job, no exercise)' },
+  { value: 1.375, label: 'Lightly Active (1-3 days/week)' },
+  { value: 1.55,  label: 'Moderately Active (3-5 days/week)' },
+  { value: 1.725, label: 'Very Active (6-7 days/week)' },
+  { value: 1.9,   label: 'Extremely Active (2x/day training)' },
+];
+
+const CUT_PRESETS = [
+  { label: 'Cut 2 lbs/week',   deficit: -1000, emoji: '🔥🔥' },
+  { label: 'Cut 1 lb/week',    deficit: -500,  emoji: '🔥' },
+  { label: 'Cut 0.5 lb/week',  deficit: -250,  emoji: '✂️' },
+  { label: 'Maintain',         deficit: 0,     emoji: '⚖️' },
+  { label: 'Lean Bulk +0.5lb', deficit: 250,   emoji: '💪' },
+  { label: 'Bulk +1 lb/week',  deficit: 500,   emoji: '🏋️' },
+];
+
+function calcTDEE(weightLbs, heightInches, age, sex, activityMultiplier) {
+  const weightKg = weightLbs * 0.453592;
+  const heightCm = heightInches * 2.54;
+  const bmr = sex === 'female'
+    ? 10 * weightKg + 6.25 * heightCm - 5 * age - 161
+    : 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+  return Math.round(bmr * activityMultiplier);
+}
+
+function calcMacros(calories, weightLbs) {
+  const protein = Math.round(weightLbs);           // 1g per lb
+  const fat     = Math.round((calories * 0.27) / 9); // 27% from fat
+  const carbs   = Math.round((calories - protein * 4 - fat * 9) / 4);
+  return { protein, fat, carbs: Math.max(carbs, 50) };
+}
+
 export default function Settings({ userSettings, updateSettings, user }) {
   const [form, setForm] = useState({
     display_name: '',
@@ -30,6 +63,22 @@ export default function Settings({ userSettings, updateSettings, user }) {
   const [msg, setMsg] = useState('');
   const [exporting, setExporting] = useState(false);
   const [showKey, setShowKey] = useState(false);
+  const [showCalc, setShowCalc] = useState(false);
+  const [activityLevel, setActivityLevel] = useState(1.55);
+
+  const tdee = form.weight_lbs && form.height_inches && form.age && form.sex
+    ? calcTDEE(parseFloat(form.weight_lbs), parseFloat(form.height_inches), parseInt(form.age), form.sex, activityLevel)
+    : null;
+
+  const applyPreset = (deficit) => {
+    if (!tdee) return;
+    const calories = Math.max(tdee + deficit, 1200);
+    const { protein, fat, carbs } = calcMacros(calories, parseFloat(form.weight_lbs));
+    setForm(f => ({ ...f, calorie_goal: String(calories), protein_goal: String(protein), carbs_goal: String(carbs), fat_goal: String(fat) }));
+    setShowCalc(false);
+    setMsg('✓ Targets updated — hit Save to keep them!');
+    setTimeout(() => setMsg(''), 3000);
+  };
 
   useEffect(() => {
     if (userSettings) {
@@ -161,7 +210,67 @@ export default function Settings({ userSettings, updateSettings, user }) {
 
       {/* Nutrition targets */}
       <div style={{ ...card, marginBottom: '16px' }}>
-        <SectionHeader title="Daily Nutrition Targets" subtitle="Set your calorie and macro goals" />
+        <div style={{ ...flexBetween, marginBottom: '20px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
+          <div>
+            <h2 style={{ fontSize: '16px', fontWeight: '700', color: C.text, marginBottom: '2px' }}>Daily Nutrition Targets</h2>
+            <p style={{ fontSize: '13px', color: C.muted }}>Set your calorie and macro goals</p>
+          </div>
+          <button
+            onClick={() => setShowCalc(v => !v)}
+            style={{ ...btn, backgroundColor: `${C.accent2}15`, color: C.accent2, border: `1px solid ${C.accent2}40`, fontSize: '12px' }}
+          >
+            🧮 {showCalc ? 'Hide Calculator' : 'Auto-Calculate'}
+          </button>
+        </div>
+
+        {/* TDEE Calculator */}
+        {showCalc && (
+          <div style={{ backgroundColor: C.surface, borderRadius: '10px', padding: '16px', marginBottom: '20px', border: `1px solid ${C.border}` }}>
+            <div style={{ fontSize: '13px', fontWeight: '600', color: C.text, marginBottom: '12px' }}>
+              🧮 TDEE Calculator
+              {!form.weight_lbs || !form.height_inches || !form.age || !form.sex
+                ? <span style={{ color: C.warning, fontWeight: '400', fontSize: '12px', marginLeft: '8px' }}>← Fill in your Personal Info above first</span>
+                : null}
+            </div>
+
+            <div style={{ marginBottom: '12px' }}>
+              <label style={{ ...label }}>Activity Level</label>
+              <select value={activityLevel} onChange={e => setActivityLevel(parseFloat(e.target.value))} style={{ ...input }}>
+                {ACTIVITY_LEVELS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
+              </select>
+            </div>
+
+            {tdee && (
+              <>
+                <div style={{ padding: '10px 14px', backgroundColor: `${C.accent}10`, border: `1px solid ${C.accent}30`, borderRadius: '8px', marginBottom: '14px', fontSize: '13px', color: C.text }}>
+                  Your estimated TDEE (maintenance): <strong style={{ color: C.accent }}>{tdee.toLocaleString()} kcal/day</strong>
+                </div>
+                <div style={{ fontSize: '12px', color: C.muted, marginBottom: '8px', fontWeight: '600' }}>Pick a goal — targets will be filled automatically:</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                  {CUT_PRESETS.map(p => {
+                    const cal = Math.max(tdee + p.deficit, 1200);
+                    const { protein, fat, carbs } = calcMacros(cal, parseFloat(form.weight_lbs));
+                    return (
+                      <button
+                        key={p.label}
+                        onClick={() => applyPreset(p.deficit)}
+                        style={{ padding: '10px 8px', backgroundColor: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', cursor: 'pointer', fontFamily: fonts.body, textAlign: 'center' }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = C.accent2}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
+                      >
+                        <div style={{ fontSize: '14px', marginBottom: '2px' }}>{p.emoji}</div>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: C.text }}>{p.label}</div>
+                        <div style={{ fontSize: '11px', color: C.accent, marginTop: '2px' }}>{cal.toLocaleString()} kcal</div>
+                        <div style={{ fontSize: '10px', color: C.muted }}>{protein}p · {carbs}c · {fat}f</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ ...label }}>Daily Calorie Goal (kcal)</label>

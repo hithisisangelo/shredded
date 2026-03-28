@@ -100,6 +100,18 @@ function initSchema() {
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
 
+    CREATE TABLE IF NOT EXISTS cardio_logs (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      date TEXT NOT NULL,
+      activity TEXT NOT NULL,
+      duration_minutes INTEGER NOT NULL,
+      calories_burned INTEGER NOT NULL DEFAULT 0,
+      notes TEXT DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
     CREATE TABLE IF NOT EXISTS food_photos (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -116,6 +128,7 @@ function initSchema() {
     CREATE INDEX IF NOT EXISTS idx_body_logs_user_date ON body_logs(user_id, date);
     CREATE INDEX IF NOT EXISTS idx_workout_plans_user ON workout_plans(user_id);
     CREATE INDEX IF NOT EXISTS idx_food_photos_user_date ON food_photos(user_id, date);
+    CREATE INDEX IF NOT EXISTS idx_cardio_logs_user_date ON cardio_logs(user_id, date);
   `);
 }
 
