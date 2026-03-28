@@ -67,10 +67,11 @@ export default function Settings({ userSettings, updateSettings, user }) {
         nutrition.getHistory(30),
         progress.getBodyweight(90),
       ]);
+      const { anthropic_api_key, ...safeSettings } = form;
       const exportData = {
         exportedAt: new Date().toISOString(),
         user: { username: user?.username, email: user?.email },
-        settings: form,
+        settings: safeSettings,
         workoutLogs,
         nutritionHistory,
         bodyweightData,

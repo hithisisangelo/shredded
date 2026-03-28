@@ -10,6 +10,10 @@ router.get('/', (req, res) => {
     const db = getDb();
     const rows = db.prepare('SELECT key, value FROM user_settings WHERE user_id = ?').all(req.userId);
     const settings = Object.fromEntries(rows.map(r => [r.key, r.value]));
+    // Never send the actual API key to the client — just indicate if it's set
+    if (settings.anthropic_api_key) {
+      settings.anthropic_api_key = '••••••••••••••••';
+    }
     res.json(settings);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch settings' });
@@ -32,10 +36,19 @@ router.post('/', (req, res) => {
       }
     });
 
-    upsertMany(Object.entries(settings));
+    // Don't overwrite the API key if the masked placeholder was sent back
+    const entries = Object.entries(settings).filter(([key, value]) => {
+      if (key === 'anthropic_api_key' && value === '••••••••••••••••') return false;
+      return true;
+    });
+    upsertMany(entries);
 
     const rows = db.prepare('SELECT key, value FROM user_settings WHERE user_id = ?').all(req.userId);
     const allSettings = Object.fromEntries(rows.map(r => [r.key, r.value]));
+    // Mask the key before sending back
+    if (allSettings.anthropic_api_key) {
+      allSettings.anthropic_api_key = '••••••••••••••••';
+    }
     res.json(allSettings);
   } catch (err) {
     console.error(err);
